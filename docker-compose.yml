@@ -1,0 +1,79 @@
+version: '3.9'
+
+networks:
+  my-networks:
+    driver: bridge
+
+services:
+  database:
+    image: mysql
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    volumes:
+      - ./demo_mic.sql:/docker-entrypoint-initdb.d
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: Truong99
+    networks:
+      my-networks:
+        aliases:
+            - "database"
+  eureka-service:
+    image: example/eureka-service
+    build:
+      context: eureka-service
+      dockerfile: ./Dockerfile
+    ports:
+      - "8761:8761"
+    networks:
+      my-networks:
+        aliases:
+          - "eureka-service"
+  gateway-service:
+    image: example/gateway-service
+    build:
+      context: gateway-service
+      dockerfile: ./Dockerfile
+    environment:
+      EUREKA_URL: eureka-service
+    depends_on:
+      - eureka-service
+      - database
+    restart: on-failure
+    ports:
+      - "8080:8080"
+    networks:
+      - my-networks
+  payment-service:
+    image: example/payment-service
+    build:
+      context: payment-service
+      dockerfile: ./Dockerfile
+    environment:
+      EUREKA_URL: eureka-service
+    depends_on:
+      - eureka-service
+      - database
+      - auth-service
+    restart: on-failure
+    ports:
+      - "8082:8082"
+    networks:
+      - my-networks
+  auth-service:
+    image: example/auth-service
+    build:
+      context: auth-service
+      dockerfile: ./Dockerfile
+    environment:
+      EUREKA_URL: eureka-service
+    depends_on:
+      - eureka-service
+      - database
+    restart: on-failure
+    ports:
+      - "8083:8083"
+    networks:
+      my-networks:
+        aliases:
+            - "auth-service"

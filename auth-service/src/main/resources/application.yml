@@ -1,0 +1,114 @@
+spring:
+  application:
+    name: auth-service
+server:
+  port: 8083
+
+---
+spring:
+  datasource:
+    url: ${JDBC_URL:jdbc:mysql://localhost:3306/demo_microservice}
+    username: ${JDBC_USERNAME:root}
+    password: ${JDBC_PASSWORD:Truong99}
+    driver-class-name: ${JDBC_DRIVER:com.mysql.cj.jdbc.Driver}
+  jpa:
+    database-platform: ${JDBC_PLATFORM:org.hibernate.dialect.MySQL5InnoDBDialect}
+    properties:
+      hibernate:
+        dialect: ${JDBC_DIALECT:org.hibernate.dialect.MySQL5InnoDBDialect}
+---
+spring:
+  datasource:
+    hikari:
+      connection-timeout: 20000
+      idle-timeout: 300000
+      max-lifetime: 1800000
+      minimum-idle: 10
+      maximum-pool-size: 10
+      auto-commit: true
+---
+
+# Show or not log for each sql query
+spring:
+  jpa:
+    show-sql: true
+---
+# Transactions
+spring:
+  jpa:
+    open-in-view: false
+---
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: update
+---
+spring:
+  jpa:
+    hibernate:
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+---
+spring:
+  jpa:
+    properties:
+      hibernate:
+        enable_lazy_load_no_trans: true
+---
+spring:
+  datasource:
+    tomcat:
+      remove-abandoned: true
+---
+# Number of ms to wait before throwing an exception if no connection is available:
+spring:
+  datasource:
+    tomcat:
+      max-wait: 10000
+---
+# Maximum number of active connections that can be allocated from this pool at the same time:
+spring:
+  datasource:
+    tomcat:
+      max-active: 50
+---
+# Validate the connection before borrowing it from the pool:
+spring:
+  datasource:
+    tomcat:
+      test-on-borrow: true
+---
+spring:
+  jpa:
+    properties:
+      hibernate:
+        c3p0:
+          max_size: 15
+          min_size: 6
+          timeout: 60000
+          max_statements_per_connection: 10
+          idle_test_period: 3000
+          acquire_increment: 3
+          validate: false
+          numHelperThreads: 15
+  jackson:
+    serialization:
+      fail-on-empty-beans: false
+  main:
+    allow-bean-definition-overriding: true
+  oauth2:
+    resource:
+      filter-order: 3
+  resources:
+    add-mappings: false
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://${EUREKA_URL:localhost:8761}/eureka
+    eureka-connection-idle-timeout-seconds: 10
+  instance:
+    ip-address: ${CLIENT_IP_ADDRESS:localhost}
+    hostname: ${HOSTNAME:auth-service}
+    prefer-ip-address: ${PREFER_IP_ADDRESS:true}
+
