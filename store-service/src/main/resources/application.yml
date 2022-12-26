@@ -1,0 +1,30 @@
+spring:
+  application:
+    name: store-service
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: true
+  datasource:
+    url: jdbc:mysql://localhost:3306/demo_microservice
+    username: root
+    password: Truong99
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+server:
+  port: 8084
+
+oauth2:
+  oauth:
+    clientId: ${AUTH_CLIENTID:adminapp1}
+    secret: ${AUTH_SECRET:password}
+    publicKeyEndpointUri:  ${AUTH_URL:http://auth-service:8083/oauth/token_key}
+
+eureka:
+  client:
+    service-url:
+      default-zone: http://${EUREKA_URL:localhost:8761}/eureka
+  instance:
+    ip-address: ${CLIENT_IP_ADDRESS:localhost}
+    hostname: ${HOSTNAME:store-service}
+    prefer-ip-address: ${PREFER_IP_ADDRESS:true}
