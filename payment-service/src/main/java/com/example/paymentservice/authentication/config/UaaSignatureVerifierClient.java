@@ -14,7 +14,7 @@ import org.springframework.security.jwt.crypto.sign.SignatureVerifier;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
 /**
@@ -36,11 +36,10 @@ public class UaaSignatureVerifierClient implements OAuth2SignatureVerifierClient
 	private String publicKeyEndpointUri;
 
 	public UaaSignatureVerifierClient(DiscoveryClient discoveryClient,
-			@Qualifier("loadBalancedRestTemplate") RestTemplate restTemplate, OAuth2Properties oAuth2Properties) {
+									  @Qualifier("loadBalancedRestTemplate") RestTemplate restTemplate, OAuth2Properties oAuth2Properties) {
 		this.restTemplate = restTemplate;
 //		this.restTemplate = new RestTemplate();
 		this.oAuth2Properties = oAuth2Properties;
-		// Load available UAA servers
 		discoveryClient.getServices();
 	}
 
@@ -52,10 +51,6 @@ public class UaaSignatureVerifierClient implements OAuth2SignatureVerifierClient
 	@Override
 	public SignatureVerifier getSignatureVerifier() throws Exception {
 		try {
-//			String key = (String) restTemplate.exchange(getPublicKeyEndpoint(), HttpMethod.GET,
-//					new HttpEntity<Void>(createHeaders(oAuth2Properties.getWebClientConfiguration().getClientId(),
-//							oAuth2Properties.getWebClientConfiguration().getSecret())),
-//					Map.class).getBody().get("value");
 			String key = (String) restTemplate.exchange(publicKeyEndpointUri, HttpMethod.GET,
 					new HttpEntity<Void>(createHeaders(clientId, secret)), Map.class).getBody().get("value");
 			return new RsaVerifier(key);
@@ -67,14 +62,11 @@ public class UaaSignatureVerifierClient implements OAuth2SignatureVerifierClient
 
 	HttpHeaders createHeaders(String username, String password) {
 		return new HttpHeaders() {
-			/**
-			 * 
-			 */
 			private static final long serialVersionUID = 1L;
 
 			{
 				String auth = username + ":" + password;
-				byte[] encodedAuth = Base64.encodeBase64(auth.getBytes(Charset.forName("US-ASCII")));
+				byte[] encodedAuth = Base64.encodeBase64(auth.getBytes(StandardCharsets.US_ASCII));
 				String authHeader = "Basic " + new String(encodedAuth);
 				set("Authorization", authHeader);
 			}

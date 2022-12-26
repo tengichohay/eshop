@@ -1,0 +1,32 @@
+package com.example.shared.common;
+
+public class ConstantString {
+
+	public static final long TIMEOUT_NONBLOCK = 300000L;
+	public static final int ZERO = 0;
+	public static final int MAX_SIZE = 100;
+	public static final String EMPTY_STR = "";
+	public static final String GZIP = "gzip";
+
+	public static final String YYYYMMDD = "yyyyMMdd";
+	public static final String DDMMYYYY_HHMMSS = "dd/MM/yyyy HH24:mm:ss";
+	public static final String DDMMYYYY = "dd/MM/yyyy";
+
+	public static final class ProcessingStatus {
+		public static final int SUCCESS = 1;
+		public static final int PROCESSING = 0;
+	}
+
+	public static class StatusDB {
+		public static final String SUCCESS = "success";
+		public static final String EXIST = "EXIST";
+		public static final String NOT_FOUND = "NOT_FOUND";
+	}
+
+	public static final class MINIO_CLIENT {
+		public static final long CONNECT_TIMEOUT_MS = 60000;
+		public static final long WRITE_TIMEOUT_MS = 60000;
+		public static final long READ_TIMEOUT_MS = 60000;
+	}
+
+}
