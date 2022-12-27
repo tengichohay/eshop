@@ -1,10 +1,14 @@
 package com.example.storeservice.service;
 
+import com.example.shared.common.model.PagingDTO;
+import com.example.shared.common.model.PagingDtoIn;
 import com.example.storeservice.dto.in.ProductDtoIn;
-import com.example.storeservice.entity.Product;
+import com.example.storeservice.dto.out.ProductDtoOut;
 
 public interface ProductService {
 
-	Product saveProduct(ProductDtoIn productDtoIn);
+	void saveProduct(ProductDtoIn productDtoIn);
+
+	PagingDTO<ProductDtoOut> listAllProducts(PagingDtoIn pagingDtoIn);
 
 }

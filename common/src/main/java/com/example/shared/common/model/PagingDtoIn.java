@@ -3,6 +3,7 @@ package com.example.shared.common.model;
 import com.example.shared.common.ErrorCode;
 import lombok.Data;
 import org.hibernate.validator.constraints.Range;
+
 import javax.validation.constraints.NotNull;
 
 @Data

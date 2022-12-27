@@ -9,7 +9,7 @@ public class ConstantString {
 	public static final String GZIP = "gzip";
 
 	public static final String YYYYMMDD = "yyyyMMdd";
-	public static final String DDMMYYYY_HHMMSS = "dd/MM/yyyy HH24:mm:ss";
+	public static final String DDMMYYYY_HHMMSS = "dd/MM/yyyy HH:mm:ss";
 	public static final String DDMMYYYY = "dd/MM/yyyy";
 
 	public static final class ProcessingStatus {

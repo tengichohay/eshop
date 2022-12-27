@@ -1,13 +1,25 @@
 package com.example.shared.common.model;
 
+import com.example.shared.common.Common;
 import com.example.shared.common.ConstantString;
 import com.google.gson.GsonBuilder;
+import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
+import org.apache.commons.lang3.ObjectUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Data
+@Builder
+@Getter
 public class PagingDTO<T> {
 
 	private int page;
@@ -24,25 +36,28 @@ public class PagingDTO<T> {
 
 	private List<T> data;
 
-	public static <T> PagingDTO<T> get(Long total, PagingDtoIn pagingDtoIn, List<T> rs) {
-		if (total == null) {
-			total = 0L;
+	public static Pageable build(PagingDtoIn pagingDtoIn) {
+		Sort sort = Sort.unsorted();
+		if (!Common.isNullOrEmpty(pagingDtoIn.getPropertiesSort())) {
+			Sort.Direction directionSort = Sort.Direction.fromString(ObjectUtils.defaultIfNull(pagingDtoIn.getSort(), Sort.Direction.ASC.name()));
+			List<String> properties = Arrays.stream(pagingDtoIn.getPropertiesSort().split(",")).collect(Collectors.toList());
+			List<Sort.Order> order = new ArrayList<>();
+			properties.forEach(property -> order.add(new Sort.Order(directionSort, property)));
+			sort = Sort.by(order);
 		}
-		long totalPages = total / pagingDtoIn.getMaxSize();
-		if (total % pagingDtoIn.getMaxSize() != 0) {
-			totalPages++;
-		}
-		PagingDTO<T> pagingDTO = new PagingDTO<>();
-		pagingDTO.setPage(pagingDtoIn.getPage());
-		pagingDTO.setMaxSize(pagingDtoIn.getMaxSize());
-		pagingDTO.setTotalPages(totalPages);
-		pagingDTO.setTotalElement(total);
-		if (pagingDtoIn.getPage() > totalPages) {
-			pagingDTO.setData(new ArrayList<>());
-			return pagingDTO;
-		}
-		pagingDTO.setData(rs);
-		return pagingDTO;
+		return PageRequest.of(pagingDtoIn.getPage(), pagingDtoIn.getMaxSize(), sort);
+	}
+
+	public static <T> PagingDTO<T> get(Page<?> pageResult, PagingDtoIn pagingDtoIn, List<T> result) {
+		return PagingDTO.<T>builder()
+				.page(pagingDtoIn.getPage())
+				.maxSize(pagingDtoIn.getMaxSize())
+				.totalElement(pageResult.getTotalElements())
+				.totalPages(pageResult.getTotalPages())
+				.propertiesSort(pagingDtoIn.getPropertiesSort())
+				.sort(pagingDtoIn.getSort())
+				.data(result)
+				.build();
 	}
 
 	@Override
