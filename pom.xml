@@ -21,6 +21,15 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
+    <dependencies>
+        <!-- https://mvnrepository.com/artifact/mysql/mysql-connector-java -->
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>8.0.31</version>
+        </dependency>
+    </dependencies>
+
     <modules>
         <module>eureka-service</module>
         <module>auth-service</module>
@@ -29,6 +38,8 @@
         <module>store-service</module>
         <module>common</module>
         <module>documentation-service</module>
+        <module>order-service</module>
+        <module>account-service</module>
     </modules>
 
 </project>
